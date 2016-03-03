@@ -469,6 +469,11 @@ private boolean firstTime = true;
                         Toast.makeText(getContext(), R.string.position_cross_section_instruction,
                                 Toast.LENGTH_SHORT).show();
                         break;
+                    case R.id.graph_station_switchback:
+                        station.setSwitchback(!station.isSwitchback());
+                        Toast.makeText(getContext(), R.string.changing_direction,
+                                Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         };

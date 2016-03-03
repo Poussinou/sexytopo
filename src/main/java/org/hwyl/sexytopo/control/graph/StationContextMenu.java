@@ -16,7 +16,9 @@ import org.hwyl.sexytopo.model.survey.Station;
 public class StationContextMenu {
 
 
-    public static PopupWindow getFakeStationContextMenu(Context context, Station station,
+    public static PopupWindow getFakeStationContextMenu(
+            Context context,
+            Station station,
             final View.OnClickListener listener) {
         final PopupWindow fakeMenu = new PopupWindow(context);
 

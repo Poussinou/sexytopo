@@ -11,6 +11,9 @@ public class Station extends SurveyComponent {
     private final String name;
     private List<Leg> onwardLegs = new ArrayList<>();
 
+    // special flag for switching drawing direction in extended elevation mode
+    private boolean isSwitchback = false;
+
     public Station(String name) {
         this.name = name;
     }
@@ -50,6 +53,14 @@ public class Station extends SurveyComponent {
             }
         }
         return connectedOnwardLegs;
+    }
+
+    public boolean isSwitchback() {
+        return isSwitchback;
+    }
+
+    public void setSwitchback(boolean isSwitchback) {
+        this.isSwitchback = isSwitchback;
     }
 
     public String toString() {
