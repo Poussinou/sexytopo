@@ -2,10 +2,8 @@ package org.hwyl.sexytopo.comms;
 
 import org.hwyl.sexytopo.model.survey.Leg;
 
-/**
- * Created by rls on 22/07/14.
- */
-public class DistoXProtocol {
+
+public class MeasurementProtocol {
 
     private static final int ADMIN = 0;
     private static final int DISTANCE_LOW_BYTE = 1;

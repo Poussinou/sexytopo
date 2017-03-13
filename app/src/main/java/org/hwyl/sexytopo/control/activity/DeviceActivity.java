@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import org.hwyl.sexytopo.R;
 import org.hwyl.sexytopo.SexyTopo;
-import org.hwyl.sexytopo.comms.DistoXPoller;
+import org.hwyl.sexytopo.comms.DistoXCommunicator;
 import org.hwyl.sexytopo.control.Log;
 
 import java.lang.reflect.Method;
@@ -37,7 +37,7 @@ public class DeviceActivity extends SexyTopoActivity {
 
     public static final String DISTO_X_PREFIX = "DistoX";
 
-    private DistoXPoller comms;
+    private DistoXCommunicator comms;
 
     private static final BluetoothAdapter BLUETOOTH_ADAPTER = BluetoothAdapter.getDefaultAdapter();
 
@@ -141,8 +141,7 @@ public class DeviceActivity extends SexyTopoActivity {
 
         try {
             assert comms == null;
-            BluetoothDevice bluetoothDevice = getDistoX();
-            comms = new DistoXPoller(this, bluetoothDevice, dataManager);
+            comms = DistoXCommunicator.getInstance(this, dataManager);
             comms.start();
         } catch (Exception e) {
             Log.device("Error starting thread:\n" + e.getMessage());
@@ -369,17 +368,6 @@ public class DeviceActivity extends SexyTopoActivity {
         }
         
         return pairedDistoXes;
-    }
-
-
-    private static BluetoothDevice getDistoX() {
-        Set<BluetoothDevice> distoXes = getPairedDistos();
-
-        if (distoXes.size() != 1) {
-            throw new IllegalStateException(distoXes.size() + " DistoXes paired");
-        }
-
-        return distoXes.toArray(new BluetoothDevice[]{})[0];
     }
 
 

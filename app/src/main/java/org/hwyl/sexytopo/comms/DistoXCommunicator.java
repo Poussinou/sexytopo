@@ -1,5 +1,6 @@
 package org.hwyl.sexytopo.comms;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
@@ -14,15 +15,19 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-/**
- * Created by rls on 21/07/14.
- */
-public class DistoXPoller extends Thread {
+import static org.hwyl.sexytopo.control.activity.DeviceActivity.DISTO_X_PREFIX;
+
+
+public class DistoXCommunicator extends Thread {
 
     private static final int POLLING_FREQUENCY = 5 * 1000;
     private static final int INTER_PACKET_DELAY = 1 * 100;
+
+    private static final BluetoothAdapter BLUETOOTH_ADAPTER = BluetoothAdapter.getDefaultAdapter();
 
     private SurveyManager surveyManager;
     private BluetoothDevice bluetoothDevice;
@@ -34,22 +39,30 @@ public class DistoXPoller extends Thread {
 
     byte[] previousPacket = null;
 
+    private static DistoXCommunicator instance = null;
 
-    public DistoXPoller(Context context,
-            BluetoothDevice bluetoothDevice, SurveyManager surveyManager) {
-
+    private DistoXCommunicator(Context context, SurveyManager surveyManager) {
         this.context = context;
         this.surveyManager = surveyManager;
-        this.bluetoothDevice = bluetoothDevice;
+        this.bluetoothDevice = getDistoX();
+    }
+
+    public static synchronized DistoXCommunicator getInstance(
+            Context context, SurveyManager dataManager) {
+        if (instance == null) {
+            instance = new DistoXCommunicator(context, dataManager);
+        }
+        return instance;
     }
 
 
+    @Override
     public void run() {
 
         while(isAlive) {
             try {
 
-                if (!ensureConnection()) {
+                if (!connectIfNotConnected()) {
                     sleep(POLLING_FREQUENCY);
                     continue;
                 }
@@ -74,7 +87,7 @@ public class DistoXPoller extends Thread {
     }
 
 
-    private boolean ensureConnection() {
+    private boolean connectIfNotConnected() {
 
         if (socket == null || !socket.isConnected()) {
             try {
@@ -145,13 +158,13 @@ public class DistoXPoller extends Thread {
                 byte[] packet = new byte[8];
                 inStream.readFully(packet, 0, 8);
 
-                Log.d("Received data: " + DistoXProtocol.describeDataPacket(packet));
+                Log.d("Received data: " + MeasurementProtocol.describeDataPacket(packet));
 
                 byte type = (byte) (packet[0] & 0x3f);
 
-                byte[] acknowledgePacket = DistoXProtocol.createAcknowledgementPacket(packet);
+                byte[] acknowledgePacket = MeasurementProtocol.createAcknowledgementPacket(packet);
                 outStream.write(acknowledgePacket, 0, acknowledgePacket.length);
-                Log.d(SexyTopo.TAG, "Sent Ack: " + DistoXProtocol.describeAcknowledgementPacket(acknowledgePacket));
+                Log.d("Sent Ack: " + MeasurementProtocol.describeAcknowledgementPacket(acknowledgePacket));
 
 
                 if ((packet[0] & 0x03) == 0) {
@@ -167,7 +180,7 @@ public class DistoXPoller extends Thread {
 
                 } else {
                     Log.device(context.getString(R.string.device_log_received));
-                    Leg leg = DistoXProtocol.parseDataPacket(packet);
+                    Leg leg = MeasurementProtocol.parseDataPacket(packet);
                     legs.add(leg);
                     previousPacket = packet;
                     continue;
@@ -222,8 +235,69 @@ public class DistoXPoller extends Thread {
     }
 
 
+    private void writeCommandPacket(byte[] packet) throws IOException, Exception {
+        final int ATTEMPTS = 3;
+        for (int i = 0; i < ATTEMPTS; i++) {
+            boolean isConnected = connectIfNotConnected();
+            if (!isConnected) {
+                continue;
+            }
+            DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
+            outStream.write(packet, 0, packet.length);
+            return;
+        }
+        throw new Exception("Can't connect");
+    }
+
+
+    public void startCalibration() throws Exception {
+        Log.device("Starting calibration");
+        byte[] packet = CalibrationProtocol.getStartCalibrationPacket();
+        writeCommandPacket(packet);
+
+    }
+
+
+    public void stopCalibration() throws Exception {
+        byte[] packet = CalibrationProtocol.getStopCalibrationPacket();
+        writeCommandPacket(packet);
+    }
 
 
 
+
+
+    private static BluetoothDevice getDistoX() {
+        Set<BluetoothDevice> distoXes = getPairedDistos();
+
+        if (distoXes.size() != 1) {
+            throw new IllegalStateException(distoXes.size() + " DistoXes paired");
+        }
+
+        return distoXes.toArray(new BluetoothDevice[]{})[0];
+    }
+
+
+    private static Set<BluetoothDevice> getPairedDistos() {
+
+        if (BLUETOOTH_ADAPTER == null) {
+            return new HashSet<>(0);
+        }
+
+        Set<BluetoothDevice> pairedDistoXes = new HashSet<>();
+        Set<BluetoothDevice> pairedDevices = BLUETOOTH_ADAPTER.getBondedDevices();
+        for (BluetoothDevice device : pairedDevices) {
+            if (isDistoX(device)) {
+                pairedDistoXes.add(device);
+            }
+        }
+
+        return pairedDistoXes;
+    }
+
+    private static boolean isDistoX(BluetoothDevice device) {
+        String name = device.getName();
+        return name.toLowerCase().contains(DISTO_X_PREFIX.toLowerCase());
+    }
 
 }

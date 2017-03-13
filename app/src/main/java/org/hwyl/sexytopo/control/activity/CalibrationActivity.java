@@ -2,8 +2,10 @@ package org.hwyl.sexytopo.control.activity;
 
 import android.os.Bundle;
 import android.util.Pair;
+import android.view.View;
 
 import org.hwyl.sexytopo.R;
+import org.hwyl.sexytopo.comms.DistoXCommunicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,5 +71,25 @@ public class CalibrationActivity extends SexyTopoActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibration);
     }
+
+    public void requestStartCalibration(View view) {
+        try {
+            DistoXCommunicator comms = DistoXCommunicator.getInstance(this, dataManager);
+            comms.startCalibration();
+        } catch (Exception exception) {
+            showSimpleToast("Error starting calibration: " + exception);
+        }
+    }
+
+
+    public void requestStopCalibration(View view) {
+        try {
+            DistoXCommunicator comms = DistoXCommunicator.getInstance(this, dataManager);
+            comms.stopCalibration();
+        } catch (Exception exception) {
+            showSimpleToast("Error starting calibration: " + exception);
+        }
+    }
+
 
 }

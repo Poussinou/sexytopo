@@ -16,7 +16,8 @@
         android:textAlignment="gravity"
         android:gravity="center"
         android:text="@string/calibration_start"
-        android:enabled="false"
+        android:enabled="true"
+        android:onClick="requestStartCalibration"
         />
 
     <TableLayout
@@ -165,7 +166,8 @@
         android:textAlignment="gravity"
         android:gravity="center"
         android:text="@string/calibration_stop"
-        android:enabled="false"
+        android:enabled="true"
+        android:onClick="requestStopCalibration"
         />
 
 </LinearLayout>
