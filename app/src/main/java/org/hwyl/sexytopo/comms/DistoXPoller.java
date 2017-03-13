@@ -73,32 +73,45 @@ public class DistoXPoller extends Thread {
         disconnect();
     }
 
-    private void setupConnection() {
-        try {
-            // socket = bluetoothDevice.createRfcommSocketToServiceRecord(SexyTopo.DISTO_X_UUID);
-            socket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(SexyTopo.DISTO_X_UUID);
-        } catch (IOException e) {
-            Log.device("Error setting up connection: " + e.getMessage());
-        }
-
-    }
 
     private boolean ensureConnection() {
 
         if (socket == null || !socket.isConnected()) {
             try {
                 Log.device(context.getString(R.string.device_log_connecting));
-                socket = bluetoothDevice.createRfcommSocketToServiceRecord(SexyTopo.DISTO_X_UUID);
+                socket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(SexyTopo.DISTO_X_UUID);
 
                 socket.connect(); // blocks until connection is complete or fails with an exception
-                assert socket.isConnected();
-                Log.device(context.getString(R.string.device_log_connected));
-            } catch (Exception e) {
-                Log.device("Error connecting: " + e.getMessage());
+            } catch(Exception exception) {
+                if (exception.getMessage().contains("socket might closed or timeout")) {
+                    try {
+                        Log.device(context.getString(R.string.device_trying_fallback));
+                        socket = createFallbackSocket();
+                        socket.connect();
+                    } catch (Exception e) {
+                        Log.device("Failed to create fallback socket: " + e.getMessage());
+                    }
+                } else {
+                    Log.device("Error connecting: " + exception.getMessage());
+                }
+            } finally {
+                if (socket.isConnected()) {
+                    Log.device(context.getString(R.string.device_log_connected));
+                } else {
+                    Log.device(context.getString(R.string.device_log_not_connected));
+                }
             }
         }
 
         return socket.isConnected();
+    }
+
+    private BluetoothSocket createFallbackSocket() throws Exception {
+        BluetoothSocket socket = (BluetoothSocket)
+                bluetoothDevice.getClass()
+                        .getMethod("createRfcommSocket", new Class[]{int.class})
+                        .invoke(bluetoothDevice, 1);
+        return socket;
     }
 
     private void disconnect() {
