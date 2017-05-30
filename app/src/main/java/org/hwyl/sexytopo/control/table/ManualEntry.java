@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hwyl.sexytopo.R;
-import org.hwyl.sexytopo.control.SurveyManager;
+import org.hwyl.sexytopo.control.DataManager;
 import org.hwyl.sexytopo.control.activity.TableActivity;
 import org.hwyl.sexytopo.control.util.SurveyUpdater;
 import org.hwyl.sexytopo.model.survey.Leg;
@@ -38,7 +38,7 @@ public class ManualEntry {
                     @Override
                     public void submit(Leg leg, Dialog dialog) {
                         SurveyUpdater.updateWithNewStation(survey, leg);
-                        SurveyManager manager = SurveyManager.getInstance(tableActivity);
+                        DataManager manager = DataManager.getInstance(tableActivity);
                         manager.broadcastSurveyUpdated();
                         manager.broadcastNewStationCreated();
                         tableActivity.syncTableWithSurvey();
@@ -56,7 +56,7 @@ public class ManualEntry {
                     @Override
                     public void submit(Leg leg, Dialog dialog) {
                         SurveyUpdater.update(survey, leg);
-                        SurveyManager.getInstance(tableActivity).broadcastSurveyUpdated();
+                        DataManager.getInstance(tableActivity).broadcastSurveyUpdated();
                         tableActivity.syncTableWithSurvey();
                     }
                 });
@@ -80,7 +80,7 @@ public class ManualEntry {
                                     toEdit.getDestination());
                         }
                         SurveyUpdater.editLeg(survey, toEdit, edited);
-                        SurveyManager.getInstance(tableActivity).broadcastSurveyUpdated();
+                        DataManager.getInstance(tableActivity).broadcastSurveyUpdated();
                         tableActivity.syncTableWithSurvey();
                     }
                 });
@@ -111,7 +111,7 @@ public class ManualEntry {
                         createLrudIfPresent(survey, station, dialog, R.id.editDistanceUp, LRUD.UP);
                         createLrudIfPresent(survey, station, dialog, R.id.editDistanceDown, LRUD.DOWN);
                         survey.setActiveStation(newActiveStation);
-                        SurveyManager.getInstance(tableActivity).broadcastSurveyUpdated();
+                        DataManager.getInstance(tableActivity).broadcastSurveyUpdated();
                         tableActivity.syncTableWithSurvey();
                     }
                 });

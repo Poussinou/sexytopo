@@ -142,7 +142,7 @@ public class DeviceActivity extends SexyTopoActivity {
         try {
             assert comms == null;
             comms = DistoXCommunicator.getInstance(this, dataManager);
-            comms.start();
+            comms.startMeasuring();
         } catch (Exception e) {
             Log.device("Error starting thread:\n" + e.getMessage());
         }
@@ -158,7 +158,7 @@ public class DeviceActivity extends SexyTopoActivity {
         Log.device(getString(R.string.device_log_stopping));
 
         try {
-            comms.kill();
+            comms.stopMeasuring();
             comms.join();
             comms = null;
             Log.device(getString(R.string.device_log_stopped));

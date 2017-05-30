@@ -30,17 +30,18 @@
         android:background="#dddddd">
         <TableRow>
             <TextView
-                android:text="Reading Number"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/calibration_index"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
             <TextView
                 android:id="@+id/calibration_index"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="0/56"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="end"/>
         </TableRow>
     </TableLayout>
+
+
 
     <TableLayout
         android:layout_width="match_parent"
@@ -48,57 +49,68 @@
         android:stretchColumns="1">
         <TableRow>
             <TextView
-                android:text="@string/stats_length"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Gx"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
             <TextView
-                android:id="@+id/statsFieldLength"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/calibrationFieldGx"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="end"/>
         </TableRow>
         <TableRow>
             <TextView
-                android:text="@string/stats_vertical_range"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Gy"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
             <TextView
-                android:id="@+id/statsFieldDepth"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/calibrationFieldGy"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="end"/>
         </TableRow>
         <TableRow>
             <TextView
-                android:text="@string/stats_number_stations"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Gz"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
             <TextView
-                android:id="@+id/statsFieldNumberStations"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/calibrationFieldGz"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="end"/>
         </TableRow>
         <TableRow>
             <TextView
-                android:text="@string/stats_longest_leg"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Mx"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
             <TextView
-                android:id="@+id/statsFieldLongestLeg"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/calibrationFieldMx"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="end"/>
         </TableRow>
         <TableRow>
             <TextView
-                android:text="@string/stats_shortest_leg"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="My"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
             <TextView
-                android:id="@+id/statsFieldShortestLeg"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/calibrationFieldMy"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="end"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="Mz"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="start"
+                />
+            <TextView
+                android:id="@+id/calibrationFieldMz"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="end"/>
         </TableRow>
     </TableLayout>
@@ -115,32 +127,47 @@
         <TableRow>
             <TextView
                 android:text="@string/calibration_next_step"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
         </TableRow>
         <TableRow>
             <TextView
                 android:text="@string/calibration_direction"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
             <TextView
                 android:id="@+id/calibration_next_direction"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Left Central"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="end"/>
         </TableRow>
         <TableRow>
             <TextView
                 android:text="@string/calibration_orientation"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="start"
                 />
             <TextView
                 android:id="@+id/calibration_next_orientation"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Face Up"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="end"/>
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1">
+        <TableRow>
+            <TextView
+                android:text="@string/calibration_assessment"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="start"
+                />
+            <TextView
+                android:id="@+id/calibrationFieldAssessment"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:gravity="end"/>
         </TableRow>
     </TableLayout>
@@ -154,7 +181,7 @@
         android:textAlignment="gravity"
         android:gravity="center"
         android:text="@string/calibration_complete"
-        android:enabled="false"
+        android:onClick="completeCalibration"
         />
 
     <Button

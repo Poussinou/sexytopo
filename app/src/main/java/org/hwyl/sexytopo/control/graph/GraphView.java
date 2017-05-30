@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 
 import org.hwyl.sexytopo.R;
-import org.hwyl.sexytopo.control.SurveyManager;
+import org.hwyl.sexytopo.control.DataManager;
 import org.hwyl.sexytopo.control.activity.GraphActivity;
 import org.hwyl.sexytopo.control.util.CrossSectioner;
 import org.hwyl.sexytopo.control.util.PreferenceAccess;
@@ -477,7 +477,7 @@ public class GraphView extends View {
                 switch(view.getId()) {
                     case R.id.graph_station_reverse:
                         SurveyUpdater.reverseLeg(survey, station);
-                        SurveyManager.getInstance(getContext()).broadcastSurveyUpdated();
+                        DataManager.getInstance(getContext()).broadcastSurveyUpdated();
                         invalidate();
                         break;
                     case R.id.graph_station_delete:
@@ -526,7 +526,7 @@ public class GraphView extends View {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         survey.deleteStation(station);
-                        SurveyManager.getInstance(getContext()).broadcastSurveyUpdated();
+                        DataManager.getInstance(getContext()).broadcastSurveyUpdated();
                     }
                 })
                 .setNegativeButton(R.string.cancel, null)

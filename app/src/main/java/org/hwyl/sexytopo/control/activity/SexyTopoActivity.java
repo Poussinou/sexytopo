@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import org.hwyl.sexytopo.R;
 import org.hwyl.sexytopo.SexyTopo;
-import org.hwyl.sexytopo.control.SurveyManager;
+import org.hwyl.sexytopo.control.DataManager;
 import org.hwyl.sexytopo.control.io.Util;
 import org.hwyl.sexytopo.control.io.basic.Loader;
 import org.hwyl.sexytopo.control.io.basic.Saver;
@@ -45,11 +45,11 @@ import java.util.Set;
  */
 public abstract class SexyTopoActivity extends AppCompatActivity {
 
-    protected SurveyManager dataManager;
+    protected DataManager dataManager;
 
     public SexyTopoActivity() {
         super();
-        dataManager = SurveyManager.getInstance(this);
+        dataManager = DataManager.getInstance(this);
     }
 
 
@@ -573,7 +573,7 @@ public abstract class SexyTopoActivity extends AppCompatActivity {
                                         Survey to, Station stationTo) throws Exception {
         from.disconnect(stationFrom, to);
         Saver.save(this, from);
-        SurveyManager.getInstance(this).broadcastSurveyUpdated();
+        DataManager.getInstance(this).broadcastSurveyUpdated();
 
         try {
             to.disconnect(stationTo, from);
@@ -652,7 +652,7 @@ public abstract class SexyTopoActivity extends AppCompatActivity {
                         String surveyName = arrayAdapter.getItem(which);
                         try {
                             Survey survey = Loader.loadSurvey(SexyTopoActivity.this, surveyName);
-                            SurveyManager.getInstance(SexyTopoActivity.this).setCurrentSurvey(survey);
+                            DataManager.getInstance(SexyTopoActivity.this).setCurrentSurvey(survey);
                             updateRememberedSurvey();
                             showSimpleToast(getString(R.string.loaded) + " " + surveyName);
                         } catch (Exception exception) {
@@ -667,7 +667,7 @@ public abstract class SexyTopoActivity extends AppCompatActivity {
     private void restoreAutosave() {
         try {
             Survey survey = Loader.loadSurvey(SexyTopoActivity.this, getSurvey().getName());
-            SurveyManager.getInstance(SexyTopoActivity.this).setCurrentSurvey(survey);
+            DataManager.getInstance(SexyTopoActivity.this).setCurrentSurvey(survey);
             showSimpleToast(getString(R.string.restored));
         } catch (Exception exception) {
             showException(exception);
@@ -736,7 +736,7 @@ public abstract class SexyTopoActivity extends AppCompatActivity {
         survey.checkActiveStation();
         Saver.save(this, survey);
         ImportManager.saveACopyOfSourceInput(this, survey, file);
-        SurveyManager.getInstance(SexyTopoActivity.this).setCurrentSurvey(survey);
+        DataManager.getInstance(SexyTopoActivity.this).setCurrentSurvey(survey);
         showSimpleToast("Imported " + survey.getName());
     }
 
@@ -791,7 +791,7 @@ public abstract class SexyTopoActivity extends AppCompatActivity {
 
     private void undoLastLeg() {
         getSurvey().undoLeg();
-        SurveyManager.getInstance(this).broadcastSurveyUpdated();
+        DataManager.getInstance(this).broadcastSurveyUpdated();
 
     }
 
@@ -828,12 +828,12 @@ public abstract class SexyTopoActivity extends AppCompatActivity {
 
 
     protected Survey getSurvey() {
-        return SurveyManager.getInstance(this).getCurrentSurvey();
+        return DataManager.getInstance(this).getCurrentSurvey();
     }
 
 
     protected void setSurvey(Survey survey) {
-        SurveyManager.getInstance(this).setCurrentSurvey(survey);
+        DataManager.getInstance(this).setCurrentSurvey(survey);
 
     }
 
@@ -847,7 +847,7 @@ public abstract class SexyTopoActivity extends AppCompatActivity {
     }
 
 
-    private void showException(Exception exception) {
+    protected void showException(Exception exception) {
         Log.d(SexyTopo.TAG, "Error: " + exception);
         showSimpleToast(getString(R.string.error_prefix) + " " + exception.getMessage());
     }

@@ -109,4 +109,9 @@ public class TextTools {
     public static String[] toArrayOfLines(String text) {
         return text.split("\\r?\\n");
     }
+
+
+    public static String describeEnum(Enum e) {
+        return e.toString().replace("_", " ").toLowerCase();
+    }
 }

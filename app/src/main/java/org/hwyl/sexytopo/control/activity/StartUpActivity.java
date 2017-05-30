@@ -7,7 +7,7 @@ import android.widget.Toast;
 import org.hwyl.sexytopo.R;
 import org.hwyl.sexytopo.SexyTopo;
 import org.hwyl.sexytopo.control.Log;
-import org.hwyl.sexytopo.control.SurveyManager;
+import org.hwyl.sexytopo.control.DataManager;
 import org.hwyl.sexytopo.control.io.Util;
 import org.hwyl.sexytopo.control.io.basic.Loader;
 import org.hwyl.sexytopo.model.survey.Survey;
@@ -43,7 +43,7 @@ public class StartUpActivity extends SexyTopoActivity {
 
 
         Survey survey = isThereAnActiveSurvey()? loadActiveSurvey() : createNewActiveSurvey();
-        SurveyManager.getInstance(this).setCurrentSurvey(survey);
+        DataManager.getInstance(this).setCurrentSurvey(survey);
 
         Log.setContext(this);
 

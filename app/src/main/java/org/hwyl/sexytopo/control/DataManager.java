@@ -13,17 +13,18 @@ import org.hwyl.sexytopo.control.util.PreferenceAccess;
 import org.hwyl.sexytopo.control.util.SurveyUpdater;
 import org.hwyl.sexytopo.model.survey.Leg;
 import org.hwyl.sexytopo.model.survey.Survey;
+import org.hwyl.sexytopo.model.calibration.CalibrationReading;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class SurveyManager {
+public class DataManager {
 
-    private static SurveyManager instance;
-    public static SurveyManager getInstance(Context context) {
+    private static DataManager instance;
+    public static synchronized DataManager getInstance(Context context) {
         if (instance == null) {
-            instance = new SurveyManager(context);
+            instance = new DataManager(context);
         }
         return instance;
     }
@@ -33,10 +34,20 @@ public class SurveyManager {
     private LocalBroadcastManager broadcastManager;
 
     // This should be created or loaded on startup
-    private static Survey currentSurvey = new Survey("ERROR");
+    private Survey currentSurvey = new Survey("Unnamed");
 
-    public SurveyManager(Context context) {
+    private List<CalibrationReading> calibrationReadings =
+            new ArrayList<CalibrationReading>();
+
+    private DataManager(Context context) {
         this.context = context;
+    }
+
+    public void updateSurvey(Leg leg) {
+        List<Leg> legList = new ArrayList<>();
+        legList.add(leg);
+        updateSurvey(legList);
+
     }
 
     public void updateSurvey(List<Leg> legs) {
@@ -85,6 +96,11 @@ public class SurveyManager {
         broadcast(new Intent(SexyTopo.SURVEY_UPDATED_EVENT));
     }
 
+    public void broadcastCalibrationUpdated() {
+        broadcast(new Intent(SexyTopo.CALIBRATION_UPDATED_EVENT));
+    }
+
+
     public void broadcastNewStationCreated() {
         broadcast(new Intent(SexyTopo.NEW_STATION_CREATED_EVENT));
     }
@@ -105,4 +121,16 @@ public class SurveyManager {
         broadcastSurveyUpdated();
     }
 
+    public void addCalibrationReading(CalibrationReading calibrationReading) {
+        this.calibrationReadings.add(calibrationReading);
+        broadcastCalibrationUpdated();
+    }
+
+    public List<CalibrationReading> getCalibrationReadings() {
+        return calibrationReadings;
+    }
+
+    public void clearCalibrationReadings() {
+        this.calibrationReadings.clear();
+    }
 }
